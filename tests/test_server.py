@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 from io import BytesIO
 
 import pytest
@@ -176,6 +177,30 @@ async def test_open_vin_in_garage_redirects():
 
 
 @pytest.mark.anyio
+async def test_open_vin_in_garage_form_differs_single_lookup_no_paid_calls():
+    """A garage VIN stored lowercase must still take the free route (one fetch)."""
+
+    def garage_lower(method: str, url: str, body: object) -> Response:
+        text = fixture_text("autokelly/garage_cars.json").replace(
+            "TESTVINHYUNDAI001", "testvinhyundai001"
+        )
+        return make_response(text, url=url)
+
+    routes = [route for route in _routes() if "Garage/Cars" not in route[1]]
+    routes.append(("POST", "Garage/Cars/1", garage_lower))
+    fetcher = FakeFetcher(routes)
+    mcp = build_server(fetcher=fetcher, login=_fake_login, confirm=_token_confirm)
+    result = _payload(
+        await mcp.call_tool("open_vin_with_credit", {"vin": " TESTVIN hyundai001 "})
+    )
+    assert result["status"] == "in_garage"
+    assert result["hint"] == "use open_garage_car"
+    assert result["car"]["vin"] == "testvinhyundai001"
+    assert _no_paid_calls(fetcher.calls)
+    assert sum(1 for _, url, _ in fetcher.calls if "Garage/Cars" in url) == 1
+
+
+@pytest.mark.anyio
 async def test_credit_flow_token_path():
     routes = _routes(vin_page=_vin_page_external)
     fetcher = FakeFetcher(routes)
@@ -209,6 +234,69 @@ async def test_credit_flow_token_path():
     assert second["vin"] == EXTERNAL_VIN
     assert second["credits_left"] == 5
     assert len(second["matches"]) == 1
+
+    def count(pred) -> int:
+        return sum(1 for method, url, _ in new if pred(method, url))
+
+    assert count(lambda m, u: "verify-usage-vin" in u) == 1
+    assert count(lambda m, u: m == "GET" and u.endswith(f"/catalog/graphic/VIN/{EXTERNAL_VIN}")) == 1
+    assert count(lambda m, u: "search/vin" in u) == 1
+    assert count(lambda m, u: "/decoded" in u) == 1
+
+
+@pytest.mark.anyio
+async def test_zero_credits_refuses_without_confirmation_or_paid_calls():
+    def credit_zero(method: str, url: str, body: object) -> Response:
+        return make_response(
+            '{"data": {"Credit": 0, "VinCreditMessage": "0", "HasUnlimitedAccess": false}}',
+            url=url,
+        )
+
+    routes = [
+        route for route in _routes(vin_page=_vin_page_external) if "vin-decoder/credit" not in route[1]
+    ]
+    routes.append(("POST", "vin-decoder/credit", credit_zero))
+    fetcher = FakeFetcher(routes)
+    confirm_calls: list = []
+
+    async def _never_confirm(ctx, vin, credits, book, token, *, reopen=False):
+        confirm_calls.append(vin)
+        raise AssertionError("confirmation must not be asked with zero credits")
+
+    mcp = build_server(fetcher=fetcher, login=_fake_login, confirm=_never_confirm)
+    with pytest.raises(ToolError, match="No VIN credits left"):
+        await mcp.call_tool("open_vin_with_credit", {"vin": EXTERNAL_VIN})
+    assert confirm_calls == []
+    assert _no_paid_calls(fetcher.calls)
+
+
+@pytest.mark.anyio
+async def test_reopen_note_expires_after_window():
+    now = [2000.0]
+    fetcher = FakeFetcher(_routes(vin_page=_vin_page_external))
+    mcp = build_server(
+        fetcher=fetcher, login=_fake_login, confirm=_token_confirm, clock=lambda: now[0]
+    )
+
+    first = _payload(await mcp.call_tool("open_vin_with_credit", {"vin": EXTERNAL_VIN}))
+    assert first["status"] == "confirmation_required"
+    assert "pravděpodobně" not in first["message"]
+    second = _payload(
+        await mcp.call_tool(
+            "open_vin_with_credit", {"vin": EXTERNAL_VIN, "confirm_token": first["confirm_token"]}
+        )
+    )
+    assert second["vin"] == EXTERNAL_VIN
+
+    now[0] += 3599.0
+    third = _payload(await mcp.call_tool("open_vin_with_credit", {"vin": EXTERNAL_VIN}))
+    assert third["status"] == "confirmation_required"
+    assert "pravděpodobně" in third["message"]
+
+    now[0] += 2.0
+    fourth = _payload(await mcp.call_tool("open_vin_with_credit", {"vin": EXTERNAL_VIN}))
+    assert fourth["status"] == "confirmation_required"
+    assert "pravděpodobně" not in fourth["message"]
 
 
 @pytest.mark.anyio
@@ -246,3 +334,70 @@ async def test_reopen_after_paid_open_mentions_probably_free():
     assert reopen["status"] == "confirmation_required"
     assert "pravděpodobně" in reopen["message"]
     assert _no_paid_calls(fetcher.calls[seen:])
+
+
+async def _open_garage_unit(routes):
+    """Open the Hyundai garage flow and return (mcp, catalog_id, unit_id)."""
+    fetcher = FakeFetcher(routes)
+    mcp = build_server(fetcher=fetcher, login=_fake_login, confirm=_token_confirm)
+    opened = _payload(await mcp.call_tool("open_garage_car", {"car": "1AB0001"}))
+    cid = opened["matches"][0]["catalog_id"]
+    units = _payload_list(await mcp.call_tool("get_group_parts", {"catalog_id": cid, "node_id": "10203"}))
+    return mcp, cid, units[0]["unit_id"]
+
+
+@pytest.mark.anyio
+async def test_get_unit_reports_image_size_and_scale():
+    mcp, cid, unit_id = await _open_garage_unit(_routes())
+    blocks = await mcp.call_tool(
+        "get_unit", {"catalog_id": cid, "unit_id": unit_id, "highlight": "25310-J7800"}
+    )
+    assert len(blocks) == 3
+    assert isinstance(blocks[0], TextContent)
+    summary = json.loads(blocks[0].text)
+    assert summary["image_size"] == [800, 600]
+    assert summary["scale"] == 1.0
+    assert "image_note" not in summary
+    assert isinstance(blocks[1], ImageContent)
+    assert isinstance(blocks[2], ImageContent)
+
+
+@pytest.mark.anyio
+async def test_get_unit_without_image_returns_summary_with_note():
+    def unit_no_image(method: str, url: str, body: object) -> Response:
+        text = fixture_text("laximo/hyundai_unit_25-253.html")
+        stripped, count = re.subn(r'src="https://img\.altechopersys\.com[^"]*"', 'src=""', text)
+        assert count == 1
+        return make_response(stripped, url=url)
+
+    routes = [route for route in _routes() if "/cs/unit" not in route[1]]
+    routes.append(("GET", "/cs/unit", unit_no_image))
+    mcp, cid, unit_id = await _open_garage_unit(routes)
+    blocks = await mcp.call_tool("get_unit", {"catalog_id": cid, "unit_id": unit_id})
+    assert len(blocks) == 1
+    assert isinstance(blocks[0], TextContent)
+    summary = json.loads(blocks[0].text)
+    assert summary["unit_id"] == unit_id
+    assert summary["image_note"]
+    assert summary["parts"]
+    assert "image_size" not in summary
+
+
+@pytest.mark.anyio
+async def test_get_unit_with_undecodable_image_returns_summary_with_note():
+    def bad_image(method: str, url: str, body: object) -> Response:
+        return Response(status=200, headers={}, text="not-an-image", content=b"not-an-image", url=url)
+
+    routes = [route for route in _routes() if "img.altechopersys" not in route[1]]
+    routes.append(("GET", "img.altechopersys.com", bad_image))
+    mcp, cid, unit_id = await _open_garage_unit(routes)
+    blocks = await mcp.call_tool(
+        "get_unit", {"catalog_id": cid, "unit_id": unit_id, "highlight": "25310-J7800"}
+    )
+    assert len(blocks) == 1
+    assert isinstance(blocks[0], TextContent)
+    summary = json.loads(blocks[0].text)
+    assert summary["unit_id"] == unit_id
+    assert summary["image_note"]
+    assert summary["parts"]
+    assert "image_size" not in summary

@@ -3,7 +3,13 @@
 from __future__ import annotations
 
 import pytest
+from mcp.server.elicitation import (
+    AcceptedElicitation,
+    CancelledElicitation,
+    DeclinedElicitation,
+)
 
+from autokelly_mcp.confirm import CreditConsent
 from autokelly_mcp.errors import ConfirmationError
 from autokelly_mcp.models import Credits
 
@@ -27,29 +33,27 @@ class _NoElicitCtx:
         raise AssertionError("elicit must not be called when unsupported")
 
 
-class _ElicitResult:
-    def __init__(self, action: str, data=None) -> None:
-        self.action = action
-        self.data = data
-
-
 class _YesSession:
     def check_client_capability(self, capability) -> bool:
         return True
 
 
-class _YesCtx:
-    def __init__(self, action: str, data=None) -> None:
+class _ElicitCtx:
+    """Elicitation-capable ctx returning a fixed real SDK result (or raising)."""
+
+    def __init__(self, result=None, error=None) -> None:
         self.session = _YesSession()
-        self._action = action
-        self._data = data
+        self._result = result
+        self._error = error
         self.messages: list[str] = []
         self.schemas: list = []
 
     async def elicit(self, message, schema):
         self.messages.append(message)
         self.schemas.append(schema)
-        return _ElicitResult(self._action, self._data)
+        if self._error is not None:
+            raise self._error
+        return self._result
 
 
 def test_token_works_once_then_fails():
@@ -126,7 +130,7 @@ async def test_token_path_bad_token_fails():
 async def test_elicit_accept_true_confirms():
     from autokelly_mcp.confirm import CreditConsent, TokenBook, confirm_credit_use
 
-    ctx = _YesCtx("accept", {"confirm": True})
+    ctx = _ElicitCtx(AcceptedElicitation(data=CreditConsent(confirm=True)))
     result = await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None)
     assert result == "confirmed"
     assert len(ctx.messages) == 1
@@ -139,7 +143,17 @@ async def test_elicit_accept_true_confirms():
 async def test_elicit_accept_false_declines():
     from autokelly_mcp.confirm import TokenBook, confirm_credit_use
 
-    ctx = _YesCtx("accept", {"confirm": False})
+    ctx = _ElicitCtx(AcceptedElicitation(data=CreditConsent(confirm=False)))
+    assert await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None) == "declined"
+
+
+@pytest.mark.anyio
+async def test_elicit_accept_none_data_declines():
+    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+
+    accepted = AcceptedElicitation.model_construct(data=None)
+    assert accepted.action == "accept"
+    ctx = _ElicitCtx(accepted)
     assert await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None) == "declined"
 
 
@@ -147,7 +161,7 @@ async def test_elicit_accept_false_declines():
 async def test_elicit_decline_declines():
     from autokelly_mcp.confirm import TokenBook, confirm_credit_use
 
-    ctx = _YesCtx("decline")
+    ctx = _ElicitCtx(DeclinedElicitation())
     assert await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None) == "declined"
 
 
@@ -155,8 +169,17 @@ async def test_elicit_decline_declines():
 async def test_elicit_cancel_declines():
     from autokelly_mcp.confirm import TokenBook, confirm_credit_use
 
-    ctx = _YesCtx("cancel")
+    ctx = _ElicitCtx(CancelledElicitation())
     assert await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None) == "declined"
+
+
+@pytest.mark.anyio
+async def test_elicit_error_propagates_never_confirmed():
+    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+
+    ctx = _ElicitCtx(error=RuntimeError("elicitation transport blew up"))
+    with pytest.raises(RuntimeError, match="elicitation transport blew up"):
+        await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None)
 
 
 REOPEN_NOTE = "Tento VIN už byl v této relaci otevřen"
@@ -164,9 +187,9 @@ REOPEN_NOTE = "Tento VIN už byl v této relaci otevřen"
 
 @pytest.mark.anyio
 async def test_reopen_true_adds_note_to_elicitation_message():
-    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+    from autokelly_mcp.confirm import CreditConsent, TokenBook, confirm_credit_use
 
-    ctx = _YesCtx("accept", {"confirm": True})
+    ctx = _ElicitCtx(AcceptedElicitation(data=CreditConsent(confirm=True)))
     result = await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None, reopen=True)
     assert result == "confirmed"
     assert REOPEN_NOTE in ctx.messages[0]
@@ -178,9 +201,9 @@ async def test_reopen_true_adds_note_to_elicitation_message():
 
 @pytest.mark.anyio
 async def test_reopen_false_has_no_note_in_elicitation_message():
-    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+    from autokelly_mcp.confirm import CreditConsent, TokenBook, confirm_credit_use
 
-    ctx = _YesCtx("accept", {"confirm": True})
+    ctx = _ElicitCtx(AcceptedElicitation(data=CreditConsent(confirm=True)))
     result = await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None, reopen=False)
     assert result == "confirmed"
     assert REOPEN_NOTE not in ctx.messages[0]

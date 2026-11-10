@@ -5,20 +5,18 @@ Pure module: bytes in, bytes out. No I/O, no logging.
 
 from __future__ import annotations
 
-import re
 from io import BytesIO
 
 from PIL import Image, ImageDraw
 
+from autokelly_mcp.autokelly import normalize_code
 from autokelly_mcp.models import Callout, UnitDetail
 
 MAX_SIDE = 1600
 
-_NON_ALNUM = re.compile(r"[^A-Z0-9]")
-
 
 def _normalise_oem(value: str) -> str:
-    return _NON_ALNUM.sub("", value.upper())
+    return normalize_code(value)
 
 
 def _to_png(img: Image.Image) -> bytes:
@@ -33,6 +31,12 @@ def prepare(png_or_gif: bytes) -> bytes:
     if max(img.width, img.height) > MAX_SIDE:
         img.thumbnail((MAX_SIDE, MAX_SIDE), Image.Resampling.LANCZOS)
     return _to_png(img)
+
+
+def image_size(raw: bytes) -> tuple[int, int]:
+    """Return the (width, height) of encoded image bytes in original pixels."""
+    with Image.open(BytesIO(raw)) as img:
+        return img.width, img.height
 
 
 def find_callouts(detail: UnitDetail, key: str) -> list[Callout]:

@@ -14,6 +14,7 @@ from collections.abc import Callable
 from typing import Any, Literal
 
 from mcp import types
+from mcp.server.elicitation import AcceptedElicitation
 from pydantic import BaseModel, Field
 
 from autokelly_mcp.errors import ConfirmationError
@@ -106,13 +107,9 @@ async def confirm_credit_use(
         result = await ctx.elicit(
             message=_elicitation_message(vin, credits, reopen), schema=CreditConsent
         )
-        if getattr(result, "action", None) == "accept":
-            data = getattr(result, "data", None)
-            if isinstance(data, dict):
-                ok = data.get("confirm") is True
-            else:
-                ok = getattr(data, "confirm", None) is True
-            if ok:
+        if isinstance(result, AcceptedElicitation):
+            data = result.data
+            if isinstance(data, CreditConsent) and data.confirm is True:
                 return "confirmed"
         return "declined"
     if confirm_token is None:

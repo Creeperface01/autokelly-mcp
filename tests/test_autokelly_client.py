@@ -130,6 +130,20 @@ async def test_verify_usage_refused():
 
 
 @pytest.mark.anyio
+async def test_verify_usage_vin_never_relogs_in():
+    """A NotLoggedInError inside the paid verify call propagates without a login/retry."""
+
+    def expired(method: str, url: str, body: object):
+        raise NotLoggedInError("session expired mid paid flow")
+
+    fetcher, client, counter = _make_client([("POST", "vin-decoder/verify-usage-vin", expired)])
+    with pytest.raises(NotLoggedInError):
+        await client.verify_usage_vin("TESTVINEXTERN0001")
+    assert counter["logins"] == 0
+    assert len(fetcher.calls) == 1
+
+
+@pytest.mark.anyio
 async def test_never_calls_cart():
     save_session(SessionData(cookies=[], user_agent="ua", search_guid=_GUID))
     fetcher, client, _ = _make_client(

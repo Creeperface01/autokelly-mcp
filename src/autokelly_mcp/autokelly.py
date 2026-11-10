@@ -30,6 +30,14 @@ from autokelly_mcp.session_store import load_session, update_search_guid
 
 T = TypeVar("T")
 
+_NORMALISE_RE = re.compile(r"[^A-Z0-9]")
+
+
+def normalize_code(value: str) -> str:
+    """Return the uppercase alphanumeric-only form of a VIN, plate or OEM number."""
+    return _NORMALISE_RE.sub("", value.upper())
+
+
 _GARAGE_LIST_REFERER = BASE_URL + "/Garage/CarList"
 _HOME_REFERER = BASE_URL + "/"
 
@@ -84,11 +92,10 @@ class AutokellyClient:
             for car in cars:
                 if query == car.id:
                     return car
-            normalised = re.sub(r"[^A-Z0-9]", "", query.upper())
+            normalised = normalize_code(query)
             for car in cars:
                 if normalised and (
-                    normalised == re.sub(r"[^A-Z0-9]", "", car.vin.upper())
-                    or normalised == re.sub(r"[^A-Z0-9]", "", car.plate.upper())
+                    normalised == normalize_code(car.vin) or normalised == normalize_code(car.plate)
                 ):
                     return car
             raise UnknownCarError(f"Unknown car: {query!r}.", cars=cars)
@@ -110,12 +117,19 @@ class AutokellyClient:
         return BASE_URL + f"/catalog/graphic/VIN/{vin}", _HOME_REFERER
 
     async def catalog_entry(self, vin: str, from_garage: bool) -> CatalogEntry:
-        """Open the VIN catalog page and cache its search guid."""
+        """Open the VIN catalog page and cache its search guid.
 
-        async def impl() -> CatalogEntry:
-            return await self._catalog_entry_impl(vin, from_garage)
+        The paid route (``from_garage=False``) must never auto-retry: a retry
+        could spend a second credit, so a stale session surfaces as an error.
+        """
 
-        return await self._run(impl)
+        if from_garage:
+
+            async def impl() -> CatalogEntry:
+                return await self._catalog_entry_impl(vin, from_garage)
+
+            return await self._run(impl)
+        return await self._catalog_entry_impl(vin, from_garage)
 
     async def _catalog_entry_impl(self, vin: str, from_garage: bool) -> CatalogEntry:
         url, referer = self._vin_page_url(vin, from_garage)
@@ -128,36 +142,49 @@ class AutokellyClient:
         return entry
 
     async def notify_decoded(self, vin: str, from_garage: bool) -> None:
-        """Tell the site the VIN was decoded, mirroring the website's own call."""
+        """Tell the site the VIN was decoded, mirroring the website's own call.
 
-        async def impl() -> None:
-            url, _ = self._vin_page_url(vin, from_garage)
-            resp = await self._fetcher.post_json(
-                BASE_URL + f"/catalog/graphic/vin/{vin}/decoded",
-                {"decodedFromGarage": from_garage},
-                referer=url,
-            )
-            parse_json(resp)
+        The paid route (``from_garage=False``) must never auto-retry.
+        """
 
-        await self._run(impl)
+        if from_garage:
+
+            async def impl() -> None:
+                url, _ = self._vin_page_url(vin, from_garage)
+                resp = await self._fetcher.post_json(
+                    BASE_URL + f"/catalog/graphic/vin/{vin}/decoded",
+                    {"decodedFromGarage": from_garage},
+                    referer=url,
+                )
+                parse_json(resp)
+
+            await self._run(impl)
+            return
+        url, _ = self._vin_page_url(vin, from_garage)
+        resp = await self._fetcher.post_json(
+            BASE_URL + f"/catalog/graphic/vin/{vin}/decoded",
+            {"decodedFromGarage": from_garage},
+            referer=url,
+        )
+        parse_json(resp)
 
     async def verify_usage_vin(self, vin: str) -> None:
-        """Check the paid route may be used; raise CreditRefusedError when it may not."""
+        """Check the paid route may be used; raise CreditRefusedError when it may not.
 
-        async def impl() -> None:
-            resp = await self._fetcher.post_json(
-                BASE_URL + "/vin-decoder/verify-usage-vin",
-                {"vin": vin, "fromGarage": False},
-                referer=_HOME_REFERER,
-            )
-            data = parse_json(resp)
-            payload = data.get("data") if isinstance(data, dict) else None
-            payload = payload if isinstance(payload, dict) else {}
-            if payload.get("CanBeUsed") is not True:
-                reason = str(payload.get("ReasonMessage", "") or "")
-                raise CreditRefusedError(reason or "VIN credit use was refused.", reason=reason)
-
-        await self._run(impl)
+        This call is part of the non-idempotent paid sequence, so it never
+        auto-retries through a fresh login.
+        """
+        resp = await self._fetcher.post_json(
+            BASE_URL + "/vin-decoder/verify-usage-vin",
+            {"vin": vin, "fromGarage": False},
+            referer=_HOME_REFERER,
+        )
+        data = parse_json(resp)
+        payload = data.get("data") if isinstance(data, dict) else None
+        payload = payload if isinstance(payload, dict) else {}
+        if payload.get("CanBeUsed") is not True:
+            reason = str(payload.get("ReasonMessage", "") or "")
+            raise CreditRefusedError(reason or "VIN credit use was refused.", reason=reason)
 
     async def oem_search(self, oem: str) -> list[Offer]:
         """Search Autokelly offers by OEM number, merging prices, stock and availability."""
@@ -168,7 +195,7 @@ class AutokellyClient:
         return await self._run(impl)
 
     async def _oem_search_impl(self, oem: str) -> list[Offer]:
-        normalised = re.sub(r"[^A-Z0-9]", "", oem.upper())
+        normalised = normalize_code(oem)
         if not normalised:
             raise ValueError("empty OEM number")
         session = load_session()
