@@ -1,0 +1,41 @@
+{
+ "items": [
+  {
+   "ProductId": 13089926,
+   "Disponibility": {
+    "Text": "Běžně do 17 dnů",
+    "ValidTo": null,
+    "CssClass": "ProductStockAvailibilityUnknown",
+    "Amount": 1,
+    "IsCanceled": false,
+    "NotAllStocksChecked": true,
+    "AmountText": ""
+   }
+  },
+  {
+   "ProductId": 1008231127,
+   "Disponibility": {
+    "Text": "Běžně do 48h",
+    "ValidTo": null,
+    "CssClass": "ProductStockAvailibilityUnknown",
+    "Amount": 1,
+    "IsCanceled": false,
+    "NotAllStocksChecked": false,
+    "AmountText": ""
+   }
+  },
+  {
+   "ProductId": 1020327787,
+   "Disponibility": {
+    "Text": "Běžně do 48h",
+    "ValidTo": null,
+    "CssClass": "ProductStockAvailibilityUnknown",
+    "Amount": 1,
+    "IsCanceled": false,
+    "NotAllStocksChecked": false,
+    "AmountText": ""
+   }
+  }
+ ],
+ "error": ""
+}

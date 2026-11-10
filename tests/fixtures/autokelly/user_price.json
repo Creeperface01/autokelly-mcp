@@ -1,0 +1,34 @@
+{
+ "Content": [
+  {
+   "ProductId": 13089926,
+   "Price": "",
+   "PriceVat": "5 239 Kč",
+   "Discount": "",
+   "OriginalPrice": "",
+   "BonusPrice": "",
+   "BonusPriceVat": "",
+   "BonusPriceTooltip": ""
+  },
+  {
+   "ProductId": 1008231127,
+   "Price": "",
+   "PriceVat": "12 943 Kč",
+   "Discount": "",
+   "OriginalPrice": "",
+   "BonusPrice": "",
+   "BonusPriceVat": "",
+   "BonusPriceTooltip": ""
+  },
+  {
+   "ProductId": 1020327787,
+   "Price": "",
+   "PriceVat": "13 150 Kč",
+   "Discount": "",
+   "OriginalPrice": "",
+   "BonusPrice": "",
+   "BonusPriceVat": "",
+   "BonusPriceTooltip": ""
+  }
+ ]
+}

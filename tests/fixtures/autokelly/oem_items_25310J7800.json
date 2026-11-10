@@ -1,0 +1,356 @@
+{
+ "Items": [
+  {
+   "Id": "13089926",
+   "IsFake": false,
+   "Attributes": [],
+   "Text": "Chladič vody NISSENS",
+   "Description": "\r\n\r\n\r\n        <div >\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Délka sítě [mm]</div>\r\n                            <span>648</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Materiál žeber chladiče</div>\r\n                            <span>hliník</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Hloubka sítě [mm]</div>\r\n                            <span>26</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Šířka sítě [mm]</div>\r\n                            <span>291</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Materiál nádrže na vodu (chladič)</div>\r\n                            <span>Plast</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Průměr sání [mm]</div>\r\n                            <span>35</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Průměr výstupu [mm]</div>\r\n                            <span>35</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Doplňující výrobek/info 2</div>\r\n                            <span>bez krytu uzávěru</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Doplňující výrobek/info 2</div>\r\n                            <span>bez vyrovnávací nádrže</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Provedení chladiče</div>\r\n                            <span>Žebra chladiče pájené</span>\r\n                        </div>\r\n                        <div class=\"clearfix\">\r\n                            <div style=\"width:200px; float: left;\">Doplňkový výrobek/ doplňkové info</div>\r\n                            <span>s těsněním</span>\r\n                        </div>\r\n        </div>\r\n                ",
+   "CriteriumInfo": {
+    "OccurrenceCriterium": [
+     [
+      {
+       "Text": "Délka sítě [mm]",
+       "Value": "648"
+      },
+      {
+       "Text": "Materiál žeber chladiče",
+       "Value": "hliník"
+      },
+      {
+       "Text": "Hloubka sítě [mm]",
+       "Value": "26"
+      },
+      {
+       "Text": "Šířka sítě [mm]",
+       "Value": "291"
+      },
+      {
+       "Text": "Materiál nádrže na vodu (chladič)",
+       "Value": "Plast"
+      },
+      {
+       "Text": "Průměr sání [mm]",
+       "Value": "35"
+      },
+      {
+       "Text": "Průměr výstupu [mm]",
+       "Value": "35"
+      },
+      {
+       "Text": "Doplňující výrobek/info 2",
+       "Value": "bez krytu uzávěru"
+      },
+      {
+       "Text": "Doplňující výrobek/info 2",
+       "Value": "bez vyrovnávací nádrže"
+      },
+      {
+       "Text": "Provedení chladiče",
+       "Value": "Žebra chladiče pájené"
+      },
+      {
+       "Text": "Doplňkový výrobek/ doplňkové info",
+       "Value": "s těsněním"
+      }
+     ]
+    ],
+    "Criterium": [],
+    "GlobalDescription": "",
+    "RegionalDescription": "",
+    "SellerDescription": ""
+   },
+   "ShowDescription": false,
+   "Link": "/Product/NS-636728/13089926",
+   "Image": {
+    "Name": "0123/D443EAA4-6BF4-CD13-FA4A-51977A45DF86.JPG",
+    "Path": "https://content.lkq.cz/File/0123/D443EAA4-6BF4-CD13-FA4A-51977A45DF86_S.JPG",
+    "PathBig": "https://content.lkq.cz/File/0123/D443EAA4-6BF4-CD13-FA4A-51977A45DF86_L.JPG"
+   },
+   "OtherImages": [
+    {
+     "Name": "0123/05AA0893-8CFA-EA88-3C31-A203B9CF58AC.JPG",
+     "Path": "https://content.lkq.cz/File/0123/05AA0893-8CFA-EA88-3C31-A203B9CF58AC_S.JPG",
+     "PathBig": "https://content.lkq.cz/File/0123/05AA0893-8CFA-EA88-3C31-A203B9CF58AC_L.JPG"
+    },
+    {
+     "Name": "0123/36CB60C8-C1F6-EDBE-58C0-5238841760EE.JPG",
+     "Path": "https://content.lkq.cz/File/0123/36CB60C8-C1F6-EDBE-58C0-5238841760EE_S.JPG",
+     "PathBig": "https://content.lkq.cz/File/0123/36CB60C8-C1F6-EDBE-58C0-5238841760EE_L.JPG"
+    },
+    {
+     "Name": "0123/176FC4AE-E996-7F02-9000-414F4A9C9686.JPG",
+     "Path": "https://content.lkq.cz/File/0123/176FC4AE-E996-7F02-9000-414F4A9C9686_S.JPG",
+     "PathBig": "https://content.lkq.cz/File/0123/176FC4AE-E996-7F02-9000-414F4A9C9686_L.JPG"
+    },
+    {
+     "Name": "0123/1F772765-568E-5276-7691-AE12669B725C.JPG",
+     "Path": "https://content.lkq.cz/File/0123/1F772765-568E-5276-7691-AE12669B725C_S.JPG",
+     "PathBig": "https://content.lkq.cz/File/0123/1F772765-568E-5276-7691-AE12669B725C_L.JPG"
+    }
+   ],
+   "Code": "NS 636728",
+   "ReferenceCode": null,
+   "Price": "",
+   "PriceVat": "Tel.",
+   "PriceRegistration": "",
+   "PriceRegistrationVat": "",
+   "PriceWithoutDepositVat": "",
+   "BonusPrice": "",
+   "BonusPriceVat": "",
+   "BonusPriceTooltip": "",
+   "StepAmount": "1",
+   "Bon": "neimplemntovano v UI",
+   "Disponibility": {
+    "Text": "Běžně do 17 dnů",
+    "ValidTo": null,
+    "CssClass": "ProductStockAvailibilityUnknown",
+    "Amount": 1,
+    "IsCanceled": false,
+    "NotAllStocksChecked": false,
+    "AmountText": ""
+   },
+   "Storages": null,
+   "NonReversible": false,
+   "NonReversibleText": "",
+   "IsBlackFriday": false,
+   "Brand": "NISSENS",
+   "IsOrderable": true,
+   "IsUserOrderForbidden": false,
+   "IsBranchOnlyOrder": false,
+   "IsPurchaseRestricted": false,
+   "HasEDI": false,
+   "HasSupplier": false,
+   "HasReimo": false,
+   "HasBOSCH": false,
+   "ElitHasVendorInfo": false,
+   "IsStorageStock": false,
+   "StorageStockAmount": 0,
+   "IsOEPart": false,
+   "Preferred": false,
+   "Amount": 1,
+   "VPriceInfo": null,
+   "MarginInfo": "",
+   "MPriceInfo": null,
+   "PriceTooltipInfo": null,
+   "LoadUserPrice": true,
+   "LoadUserPriceInfo": false,
+   "LoadRetailPriceInfo": false,
+   "LoadUserMarginInfo": false,
+   "LoadDisponibility": true,
+   "LoadElitDisponibility": false,
+   "LoadDeposit": false,
+   "HasOeDelivery": false,
+   "HasLoadedOeDelivery": false,
+   "LoadHasOeDelivery": false,
+   "IsHelpSearchCode": false,
+   "Note": "",
+   "PromotionText": "",
+   "Deposit": null,
+   "TimeAvailabilities": null,
+   "SearchedByText": "",
+   "SubstituteCount": 2,
+   "SubstituteContent": "",
+   "IsOpenedSubstitute": false,
+   "TrackInfo": {
+    "Category": "Product",
+    "Action": "Click",
+    "Label": "Chladič vody NISSENS",
+    "WebSite": "Test new E60"
+   }
+  },
+  {
+   "Id": "1008231127",
+   "IsFake": false,
+   "Attributes": [],
+   "Text": "Náhradní díl KIA ORIGINÁL",
+   "Description": "",
+   "CriteriumInfo": null,
+   "ShowDescription": false,
+   "Link": "/Product/KIA-25310J7800/1008231127",
+   "Image": {
+    "Name": "",
+    "Path": "https://www.autokelly.cz/Images/AKXX_LOGO_ORIGINAL_CZ_S.jpg",
+    "PathBig": "https://www.autokelly.cz/Images/AKXX_LOGO_ORIGINAL_CZ_L.jpg"
+   },
+   "OtherImages": [],
+   "Code": "KIA 25310J7800",
+   "ReferenceCode": null,
+   "Price": "",
+   "PriceVat": "Tel.",
+   "PriceRegistration": "",
+   "PriceRegistrationVat": "",
+   "PriceWithoutDepositVat": "",
+   "BonusPrice": "",
+   "BonusPriceVat": "",
+   "BonusPriceTooltip": "",
+   "StepAmount": "1",
+   "Bon": "neimplemntovano v UI",
+   "Disponibility": {
+    "Text": "Běžně do 48h",
+    "ValidTo": null,
+    "CssClass": "ProductStockAvailibilityUnknown",
+    "Amount": 1,
+    "IsCanceled": false,
+    "NotAllStocksChecked": false,
+    "AmountText": ""
+   },
+   "Storages": null,
+   "NonReversible": false,
+   "NonReversibleText": "",
+   "IsBlackFriday": false,
+   "Brand": "Originální díl KIA",
+   "IsOrderable": true,
+   "IsUserOrderForbidden": false,
+   "IsBranchOnlyOrder": false,
+   "IsPurchaseRestricted": false,
+   "HasEDI": false,
+   "HasSupplier": false,
+   "HasReimo": false,
+   "HasBOSCH": false,
+   "ElitHasVendorInfo": false,
+   "IsStorageStock": false,
+   "StorageStockAmount": 0,
+   "IsOEPart": true,
+   "Preferred": false,
+   "Amount": 1,
+   "VPriceInfo": null,
+   "MarginInfo": "",
+   "MPriceInfo": null,
+   "PriceTooltipInfo": null,
+   "LoadUserPrice": true,
+   "LoadUserPriceInfo": false,
+   "LoadRetailPriceInfo": false,
+   "LoadUserMarginInfo": false,
+   "LoadDisponibility": true,
+   "LoadElitDisponibility": false,
+   "LoadDeposit": false,
+   "HasOeDelivery": false,
+   "HasLoadedOeDelivery": false,
+   "LoadHasOeDelivery": false,
+   "IsHelpSearchCode": false,
+   "Note": "",
+   "PromotionText": "",
+   "Deposit": null,
+   "TimeAvailabilities": null,
+   "SearchedByText": "",
+   "SubstituteCount": 0,
+   "SubstituteContent": "",
+   "IsOpenedSubstitute": false,
+   "TrackInfo": {
+    "Category": "Product",
+    "Action": "Click",
+    "Label": "Náhradní díl KIA ORIGINÁL",
+    "WebSite": "Test new E60"
+   }
+  },
+  {
+   "Id": "1020327787",
+   "IsFake": false,
+   "Attributes": [],
+   "Text": "Náhradní díl Hyundai ORIGINÁL",
+   "Description": "\r\n\r\n\r\n                    <div class=\"bottom15\">\r\n            Dostupnost zboží do 48 hodin (pokud je zboží dostupné u dodavatele) při objednání nejdéle do 10h\r\n        </div>\r\n    ",
+   "CriteriumInfo": {
+    "OccurrenceCriterium": [],
+    "Criterium": [],
+    "GlobalDescription": "",
+    "RegionalDescription": "Dostupnost zboží do 48 hodin (pokud je zboží dostupné u dodavatele) při objednání nejdéle do 10h",
+    "SellerDescription": ""
+   },
+   "ShowDescription": false,
+   "Link": "/Product/HYU-25310J7800/1020327787",
+   "Image": {
+    "Name": "",
+    "Path": "https://www.autokelly.cz/Images/AKXX_LOGO_ORIGINAL_CZ_S.jpg",
+    "PathBig": "https://www.autokelly.cz/Images/AKXX_LOGO_ORIGINAL_CZ_L.jpg"
+   },
+   "OtherImages": [],
+   "Code": "HYU 25310J7800",
+   "ReferenceCode": null,
+   "Price": "",
+   "PriceVat": "Tel.",
+   "PriceRegistration": "",
+   "PriceRegistrationVat": "",
+   "PriceWithoutDepositVat": "",
+   "BonusPrice": "",
+   "BonusPriceVat": "",
+   "BonusPriceTooltip": "",
+   "StepAmount": "1",
+   "Bon": "neimplemntovano v UI",
+   "Disponibility": {
+    "Text": "Běžně do 48h",
+    "ValidTo": null,
+    "CssClass": "ProductStockAvailibilityUnknown",
+    "Amount": 1,
+    "IsCanceled": false,
+    "NotAllStocksChecked": false,
+    "AmountText": ""
+   },
+   "Storages": null,
+   "NonReversible": false,
+   "NonReversibleText": "",
+   "IsBlackFriday": false,
+   "Brand": "Originální díl HYUNDAI",
+   "IsOrderable": true,
+   "IsUserOrderForbidden": false,
+   "IsBranchOnlyOrder": false,
+   "IsPurchaseRestricted": false,
+   "HasEDI": false,
+   "HasSupplier": false,
+   "HasReimo": false,
+   "HasBOSCH": false,
+   "ElitHasVendorInfo": false,
+   "IsStorageStock": false,
+   "StorageStockAmount": 0,
+   "IsOEPart": true,
+   "Preferred": false,
+   "Amount": 1,
+   "VPriceInfo": null,
+   "MarginInfo": "",
+   "MPriceInfo": null,
+   "PriceTooltipInfo": null,
+   "LoadUserPrice": true,
+   "LoadUserPriceInfo": false,
+   "LoadRetailPriceInfo": false,
+   "LoadUserMarginInfo": false,
+   "LoadDisponibility": true,
+   "LoadElitDisponibility": false,
+   "LoadDeposit": false,
+   "HasOeDelivery": false,
+   "HasLoadedOeDelivery": false,
+   "LoadHasOeDelivery": false,
+   "IsHelpSearchCode": false,
+   "Note": "",
+   "PromotionText": "",
+   "Deposit": null,
+   "TimeAvailabilities": null,
+   "SearchedByText": "",
+   "SubstituteCount": 0,
+   "SubstituteContent": "",
+   "IsOpenedSubstitute": false,
+   "TrackInfo": {
+    "Category": "Product",
+    "Action": "Click",
+    "Label": "Náhradní díl Hyundai ORIGINÁL",
+    "WebSite": "Test new E60"
+   }
+  }
+ ],
+ "Paging": {
+  "Page": 1,
+  "Size": 20,
+  "Total": 1,
+  "TotalCount": 3
+ },
+ "ECommerce": {
+  "ProdId": [
+   "NS 636728",
+   "KIA 25310J7800",
+   "HYU 25310J7800"
+  ],
+  "PageType": "category",
+  "TotalValue": 0
+ },
+ "GTMCode": "GTM-WCRRHX",
+ "RestrictionApplied": false
+}

@@ -1,0 +1,66 @@
+{
+ "Paging": {
+  "Page": 1,
+  "Size": 20,
+  "Total": 1,
+  "TotalCount": 0
+ },
+ "Items": [
+  {
+   "Id": "00000000-0000-0000-0000-000000000001",
+   "Name": "HYUNDAI  / I30 combi (PDE)  / 1.5 T-GDI Hybrid 48V ",
+   "Owner": "Nevyplněno",
+   "Phone": "",
+   "Email": "",
+   "ImagePath": "https://content.lkq.cz/File/AKXX/16535CBC-F635-2AA1-93AC-DCDED20F4457_S.JPG",
+   "ImageVirtualPath": "/File/AKXX/16535CBC-F635-2AA1-93AC-DCDED20F4457_S.JPG",
+   "VIN": "TESTVINHYUNDAI001",
+   "LicencePlate": "1AB0001",
+   "Manufactured": "1.1.1900",
+   "Mileage": 0,
+   "KW": "118",
+   "HP": "160",
+   "CCM": "1482",
+   "Fuel": "Benzín-elektro",
+   "CatalogLink": "/Catalog/osobni-automobil-nahradni-dily-hyundai-i30-iii-combi-pde-03-17-1-5-t-gdi-hybrid-48v-1482ccm-118kw-160hp-03-20/39849642;39850140;1546;44694571;51297066",
+   "CPath": "39849642;39850140;1546;44694571;51297066",
+   "Warning": {
+    "IsMOT": false,
+    "IsMedikit": false,
+    "IsSummerTyres": false,
+    "IsWinterTyres": false
+   },
+   "VinDecoderEnabled": false,
+   "ValidationType": 0,
+   "HasTecDocId": true
+  },
+  {
+   "Id": "00000000-0000-0000-0000-000000000002",
+   "Name": "ALFA ROMEO  / 147 (937_)  / 2.0 16V T.SPARK (937.AXA1, 937.AXC1, 937.BXC1) ",
+   "Owner": "Nevyplněno",
+   "Phone": "",
+   "Email": "",
+   "ImagePath": "https://content.lkq.cz/File/AKXX/612DBD9B-6A93-0B60-C03C-CB1657A174E2_S.JPG",
+   "ImageVirtualPath": "/File/AKXX/612DBD9B-6A93-0B60-C03C-CB1657A174E2_S.JPG",
+   "VIN": "TESTVINALFA000001",
+   "LicencePlate": "1AB0002",
+   "Manufactured": "1.1.1900",
+   "Mileage": 0,
+   "KW": "110",
+   "HP": "150",
+   "CCM": "1970",
+   "Fuel": "Benzín",
+   "CatalogLink": "/Catalog/osobni-automobil-nahradni-dily-alfa-romeo-147-937-10-00-12-10-2-0-16v-t-spark-937-axa1-937-axc1-937-bxc1-1970ccm-110kw-150hp-01-01-03-10/39849642;39850140;176564;791400;922178",
+   "CPath": "39849642;39850140;176564;791400;922178",
+   "Warning": {
+    "IsMOT": false,
+    "IsMedikit": false,
+    "IsSummerTyres": false,
+    "IsWinterTyres": false
+   },
+   "VinDecoderEnabled": false,
+   "ValidationType": 0,
+   "HasTecDocId": true
+  }
+ ]
+}

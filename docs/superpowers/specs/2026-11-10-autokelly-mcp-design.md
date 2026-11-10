@@ -393,6 +393,25 @@ Czech and English requests about finding car parts or OEM numbers. It tells the 
 - Exact request bodies for the stock and disponibility endpoints (capture them during
   the build).
 
+## Settled during planning (extra recon, 2026-11-10)
+
+- `searchGuid` was identical for both garage cars and across sessions. Treat it as stable
+  per account and cache it (option 1 above).
+- Laximo navigation tokens were identical across sessions; only `?session=` changes.
+- Logged out: `POST /vin-decoder/credit` → `{}` and `POST /Garage/Cars/1` → `""`.
+- Diagram images load without cookies or a referer. They are PNG despite the `.gif` URL.
+- Opening the Alfa from the garage left the credits at 5 (the garage route is free).
+- The unit page's info-box `OEM:` value is bogus (`51110029880` on every row). Use the
+  OEM column.
+- Callout positions are in the raw HTML `style` attribute (`width`, `height`,
+  `margin-top`, `margin-left`).
+- The Alfa's picture catalog and part names are **Czech** (Fiat data); the Hyundai's are
+  English.
+- Stock request body:
+  `{"productIds": [...], "listType": "GraphicsCatalogOem", "viewType": "ImageList"}`.
+  Disponibility body: `{"productIds": [...]}`.
+- Scrubbed real fixtures for both cars are in `tests/fixtures/`.
+
 ## Open points to verify during the build
 
 1. The meaning and lifetime of `searchGuid`, and whether

@@ -1,0 +1,119 @@
+{
+ "errorMessage": null,
+ "items": [
+  {
+   "productId": 13089926,
+   "storages": [
+    {
+     "Abbrev": "OSPO",
+     "Text": "Ostrava-Poruba",
+     "Id": "106",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    },
+    {
+     "Abbrev": "CS",
+     "Text": "",
+     "Id": "",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    },
+    {
+     "Abbrev": "Jiné",
+     "Text": "",
+     "Id": "",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    }
+   ]
+  },
+  {
+   "productId": 1008231127,
+   "storages": [
+    {
+     "Abbrev": "OSPO",
+     "Text": "Ostrava-Poruba",
+     "Id": "106",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    },
+    {
+     "Abbrev": "CS",
+     "Text": "",
+     "Id": "",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    },
+    {
+     "Abbrev": "Jiné",
+     "Text": "",
+     "Id": "",
+     "Stock": "do 48h",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStockAvailibilityAKPrimary",
+     "Availability": "",
+     "IsStock": false
+    }
+   ]
+  },
+  {
+   "productId": 1020327787,
+   "storages": [
+    {
+     "Abbrev": "OSPO",
+     "Text": "Ostrava-Poruba",
+     "Id": "106",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    },
+    {
+     "Abbrev": "CS",
+     "Text": "",
+     "Id": "",
+     "Stock": "0",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStock_No",
+     "Availability": "",
+     "IsStock": false
+    },
+    {
+     "Abbrev": "Jiné",
+     "Text": "",
+     "Id": "",
+     "Stock": "do 48h",
+     "EventType": "Empty",
+     "Tooltip": "",
+     "Css": "ProductStockAvailibilityAKPrimary",
+     "Availability": "",
+     "IsStock": false
+    }
+   ]
+  }
+ ]
+}
