@@ -1,0 +1,22 @@
+# Recon artifacts (contain personal data: name, email, customer number)
+.playwright-mcp/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+dist/
+build/
+*.egg-info/
+
+# Local session data must never be committed
+session.json
+*.cookies.json
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
