@@ -1,7 +1,7 @@
 # Autokelly MCP — design
 
 Date: 2026-11-10
-Status: draft, waiting for approval
+Status: approved and implemented
 
 ## Intent
 
