@@ -42,7 +42,7 @@ async def browser_login(timeout_s: int = 300) -> SessionData:
             await page.goto(_CAR_LIST_URL)
             deadline = asyncio.get_running_loop().time() + timeout_s
             while True:
-                if page.is_closed() or not browser.is_connected:
+                if page.is_closed() or not browser.is_connected():
                     raise LoginFailedError("login window was closed")
                 resp = await context.request.post(
                     _CREDIT_URL, headers={"accept": "application/json, text/plain, */*"}
