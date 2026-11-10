@@ -120,6 +120,24 @@ async def test_with_relogin_gives_up_after_retry():
 
 
 @pytest.mark.anyio
+async def test_force_login_runs_login_unconditionally():
+    save_session(SessionData(cookies=[], user_agent="OldUA", search_guid="guid-123"))
+    counter = {"logins": 0}
+    fetcher = FakeFetcher([("POST", "vin-decoder/credit", "autokelly/vin_credit.json")])
+    auth = Auth(fetcher, login=_fake_login(counter))
+
+    credits = await auth.force_login()
+
+    assert credits == Credits(credit=5, unlimited=False, message="Počet VIN kreditů: 5")
+    assert counter["logins"] == 1
+    assert len(fetcher.calls) == 1
+    saved = load_session()
+    assert saved is not None
+    assert saved.search_guid == "guid-123"
+    assert fetcher.session == saved
+
+
+@pytest.mark.anyio
 async def test_login_failure_propagates():
     async def failing_login() -> SessionData:
         raise LoginFailedError("login window was closed")

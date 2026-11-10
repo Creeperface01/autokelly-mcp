@@ -63,6 +63,15 @@ class Auth:
                 raise NotLoggedInError("Not logged in: the login did not produce a usable session.")
             return credits
 
+    async def force_login(self) -> Credits:
+        """Run the login unconditionally, then return the credit check."""
+        async with self._lock:
+            await self._do_login()
+            credits = await self._credits()
+            if credits is None:
+                raise NotLoggedInError("Not logged in: the login did not produce a usable session.")
+            return credits
+
     async def with_relogin(self, fn: Callable[[], Awaitable[T]]) -> T:
         """Run fn; on NotLoggedInError log in once (via ensure_session) and retry fn once."""
         try:
