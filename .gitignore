@@ -1,6 +1,9 @@
 # Recon artifacts (contain personal data: name, email, customer number)
 .playwright-mcp/
 
+# OpenCode session state (local only, must never be committed)
+.opencode/
+
 # Python
 __pycache__/
 *.py[cod]
