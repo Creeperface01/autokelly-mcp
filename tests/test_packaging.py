@@ -122,13 +122,14 @@ def test_readme_sections():
         "open_vin_with_credit",
         "always-allow",
         "## Paid route findings",
-        "TBD in Task 14",
+        "same login",
     ):
         assert phrase in readme, f"README missing {phrase!r}"
+    assert "TBD in Task 14" not in readme, "paid-route placeholder should be filled in"
 
 
 def test_readme_has_no_other_placeholders():
     readme = _read("README.md")
-    assert readme.count("TBD") == 1, "the paid-route line is the only allowed placeholder"
+    assert readme.count("TBD") == 0, "the paid-route placeholder was filled in Task 14"
     assert "TODO" not in readme
     assert "FIXME" not in readme

@@ -21,6 +21,11 @@ from autokelly_mcp.models import Credits
 
 TOKEN_TTL_S = 600
 
+_REOPEN_NOTE = (
+    "Tento VIN už byl v této relaci otevřen — opětovné otevření "
+    "pravděpodobně nespotřebuje další kredit."
+)
+
 
 class CreditConsent(BaseModel):
     """Elicitation schema asking for an explicit yes to spend a VIN credit."""
@@ -52,22 +57,30 @@ class TokenBook:
             raise ConfirmationError("The confirmation token has expired.")
 
 
-def _elicitation_message(vin: str, credits: Credits) -> str:
+def _elicitation_message(vin: str, credits: Credits, reopen: bool = False) -> str:
     if credits.unlimited:
-        return f"Použít VIN kredit (neomezený přístup) na VIN {vin}? Tuto akci nelze vrátit."
-    return f"Použít 1 z {credits.credit} VIN kreditů na VIN {vin}? Tuto akci nelze vrátit."
+        base = f"Použít VIN kredit (neomezený přístup) na VIN {vin}? Tuto akci nelze vrátit."
+    else:
+        base = f"Použít 1 z {credits.credit} VIN kreditů na VIN {vin}? Tuto akci nelze vrátit."
+    if reopen:
+        base += f" {_REOPEN_NOTE}"
+    return base
 
 
-def _token_warning(vin: str, credits: Credits) -> str:
+def _token_warning(vin: str, credits: Credits, reopen: bool = False) -> str:
     if credits.unlimited:
-        return (
+        base = (
             f"Vyhledání VIN {vin} použije VIN kredit (neomezený přístup). "
             "Tuto akci nelze vrátit. Pro pokračování zavolejte nástroj znovu s confirm_token."
         )
-    return (
-        f"Vyhledání VIN {vin} použije 1 z {credits.credit} VIN kreditů. "
-        "Tuto akci nelze vrátit. Pro pokračování zavolejte nástroj znovu s confirm_token."
-    )
+    else:
+        base = (
+            f"Vyhledání VIN {vin} použije 1 z {credits.credit} VIN kreditů. "
+            "Tuto akci nelze vrátit. Pro pokračování zavolejte nástroj znovu s confirm_token."
+        )
+    if reopen:
+        base += f" {_REOPEN_NOTE}"
+    return base
 
 
 async def confirm_credit_use(
@@ -76,6 +89,8 @@ async def confirm_credit_use(
     credits: Credits,
     book: TokenBook,
     confirm_token: str | None,
+    *,
+    reopen: bool = False,
 ) -> Literal["confirmed", "declined"] | dict:
     """Collect the user's yes to spend a VIN credit, or decline.
 
@@ -88,7 +103,9 @@ async def confirm_credit_use(
         types.ClientCapabilities(elicitation=types.ElicitationCapability())
     )
     if supports_elicitation:
-        result = await ctx.elicit(message=_elicitation_message(vin, credits), schema=CreditConsent)
+        result = await ctx.elicit(
+            message=_elicitation_message(vin, credits, reopen), schema=CreditConsent
+        )
         if getattr(result, "action", None) == "accept":
             data = getattr(result, "data", None)
             if isinstance(data, dict):
@@ -104,7 +121,7 @@ async def confirm_credit_use(
             "credits_left": credits.credit,
             "confirm_token": book.issue(vin),
             "expires_in_s": TOKEN_TTL_S,
-            "message": _token_warning(vin, credits),
+            "message": _token_warning(vin, credits, reopen),
         }
     book.consume(vin, confirm_token)
     return "confirmed"

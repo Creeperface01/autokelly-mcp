@@ -65,4 +65,22 @@ rm ~/.autokelly-mcp/session.json
 
 ## Paid route findings
 
-TBD in Task 14
+Live test on 2026-11-10 with a Suzuki Swift VIN outside the garage
+(balance 5 credits, confirmed through real MCP elicitation):
+
+- The first `open_vin_with_credit` (2 vehicle matches, TYPE 3 and TYPE 4)
+  deducted one credit (`credits_left` 4).
+- Opening the same VIN again a few minutes later in the same login
+  session, confirmed again, deducted nothing (`credits_left` 4, confirmed
+  by a separate `account_status`).
+- Which single call deducts the credit could not be isolated: the full
+  sequence (`verify-usage-vin` → VIN page → catalog entry → `/decoded`
+  with `decodedFromGarage: false` → credit) charged once, and repeating
+  it shortly after did not charge again. Whether a re-open stays free
+  after a longer time or in a new login session is unknown.
+- The garage route (`open_garage_car`) spent no credits.
+
+The server still asks for confirmation before every paid open. When a VIN
+already opened through the paid route in this server session is opened
+again, the confirmation notes that the re-open likely needs no further
+credit — observed free only within minutes in one login session.

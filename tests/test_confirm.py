@@ -157,3 +157,55 @@ async def test_elicit_cancel_declines():
 
     ctx = _YesCtx("cancel")
     assert await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None) == "declined"
+
+
+REOPEN_NOTE = "Tento VIN už byl v této relaci otevřen"
+
+
+@pytest.mark.anyio
+async def test_reopen_true_adds_note_to_elicitation_message():
+    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+
+    ctx = _YesCtx("accept", {"confirm": True})
+    result = await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None, reopen=True)
+    assert result == "confirmed"
+    assert REOPEN_NOTE in ctx.messages[0]
+    assert "pravděpodobně" in ctx.messages[0]
+    assert "1 z 5" in ctx.messages[0]
+    assert VIN in ctx.messages[0]
+    assert "nelze vrátit" in ctx.messages[0]
+
+
+@pytest.mark.anyio
+async def test_reopen_false_has_no_note_in_elicitation_message():
+    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+
+    ctx = _YesCtx("accept", {"confirm": True})
+    result = await confirm_credit_use(ctx, VIN, _credits(), TokenBook(), None, reopen=False)
+    assert result == "confirmed"
+    assert REOPEN_NOTE not in ctx.messages[0]
+
+
+@pytest.mark.anyio
+async def test_reopen_true_adds_note_to_token_warning():
+    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+
+    book = TokenBook()
+    first = await confirm_credit_use(_NoElicitCtx(), VIN, _credits(), book, None, reopen=True)
+    assert isinstance(first, dict)
+    assert REOPEN_NOTE in first["message"]
+    assert "pravděpodobně" in first["message"]
+    assert "1 z 5" in first["message"]
+    assert VIN in first["message"]
+    assert "nelze vrátit" in first["message"]
+
+
+@pytest.mark.anyio
+async def test_reopen_false_has_no_note_in_token_warning():
+    from autokelly_mcp.confirm import TokenBook, confirm_credit_use
+
+    book = TokenBook()
+    first = await confirm_credit_use(_NoElicitCtx(), VIN, _credits(), book, None, reopen=False)
+    assert isinstance(first, dict)
+    assert REOPEN_NOTE not in first["message"]
+    assert "pravděpodobně" not in first["message"]

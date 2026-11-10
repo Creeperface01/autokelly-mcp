@@ -77,6 +77,7 @@ def build_server(
     laximo = LaximoClient(fetcher)
     book = TokenBook()
     source = AutokellySource(client)
+    paid_vins: set[str] = set()
     mcp = FastMCP("autokelly-mcp")
 
     @mcp.tool(description="Check the login session and the VIN credit balance.")
@@ -129,7 +130,9 @@ def build_server(
         credits = await client.credits()
         if not credits.unlimited and credits.credit <= 0:
             raise ToolError("No VIN credits left.")
-        outcome = await confirm(ctx, normalised, credits, book, confirm_token)
+        outcome = await confirm(
+            ctx, normalised, credits, book, confirm_token, reopen=normalised in paid_vins
+        )
         if isinstance(outcome, dict):
             return outcome
         if outcome != "confirmed":
@@ -139,6 +142,7 @@ def build_server(
         handles = await registry.open(normalised, "credit", entry.iframe_url)
         await client.notify_decoded(normalised, False)
         left = await client.credits()
+        paid_vins.add(normalised)
         return {
             "vin": normalised,
             "route": "credit",

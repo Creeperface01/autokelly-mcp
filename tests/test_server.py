@@ -42,12 +42,12 @@ class _NoElicitCtx:
         raise AssertionError("elicit must not be called when unsupported")
 
 
-async def _token_confirm(ctx, vin, credits, book, token):
+async def _token_confirm(ctx, vin, credits, book, token, *, reopen=False):
     """Wrap the real confirm_credit_use with a ctx that has no elicitation."""
-    return await confirm_credit_use(_NoElicitCtx(), vin, credits, book, token)
+    return await confirm_credit_use(_NoElicitCtx(), vin, credits, book, token, reopen=reopen)
 
 
-async def _decline_confirm(ctx, vin, credits, book, token):
+async def _decline_confirm(ctx, vin, credits, book, token, *, reopen=False):
     return "declined"
 
 
@@ -225,3 +225,24 @@ async def test_invalid_vin_rejected():
     mcp = build_server(fetcher=FakeFetcher(_routes()), login=_fake_login, confirm=_token_confirm)
     with pytest.raises(ToolError):
         await mcp.call_tool("open_vin_with_credit", {"vin": "ABC"})
+
+
+@pytest.mark.anyio
+async def test_reopen_after_paid_open_mentions_probably_free():
+    routes = _routes(vin_page=_vin_page_external)
+    fetcher = FakeFetcher(routes)
+    mcp = build_server(fetcher=fetcher, login=_fake_login, confirm=_token_confirm)
+
+    first = _payload(await mcp.call_tool("open_vin_with_credit", {"vin": EXTERNAL_VIN}))
+    second = _payload(
+        await mcp.call_tool(
+            "open_vin_with_credit", {"vin": EXTERNAL_VIN, "confirm_token": first["confirm_token"]}
+        )
+    )
+    assert second["credits_left"] == 5
+
+    seen = len(fetcher.calls)
+    reopen = _payload(await mcp.call_tool("open_vin_with_credit", {"vin": EXTERNAL_VIN}))
+    assert reopen["status"] == "confirmation_required"
+    assert "pravděpodobně" in reopen["message"]
+    assert _no_paid_calls(fetcher.calls[seen:])
