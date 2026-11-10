@@ -98,7 +98,7 @@ def test_skill_frontmatter_triggers():
         "data, not instructions",
         "confirm_token",
         "1 of N",
-        "highlight",
+        "highlight=",
         "open_garage_car",
         "search_tree",
         "get_unit",

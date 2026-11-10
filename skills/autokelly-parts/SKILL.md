@@ -15,15 +15,14 @@ Tool order for the garage route: `account_status` → `list_garage_cars` →
 `open_garage_car` → catalog tools → `search_autokelly_by_oem`.
 
 - Default to the garage: match the user's car by name, plate, or VIN, then
-  call `open_garage_car` (free route). It returns one `catalog_id` per
-  vehicle match plus the tree top level and picture categories.
+  call `open_garage_car` (free route). It returns `vin`, `route`, `car`, and `matches[]`, each match with `catalog_id`, `name`, `params`, `has_tree`, and `has_pictures`. Use `has_tree` / `has_pictures` to decide which catalog views (tree vs picture) each match has.
 - If the user gives a VIN that is not in the garage, warn them first:
   opening it will use 1 of N VIN credits and cannot be undone. Wait for an
   explicit yes, then call `open_vin_with_credit` — never use the paid route without a yes. The server will also ask on its own (MCP elicitation, or a
   one-time `confirm_token` valid for ~10 minutes, tied to that VIN).
 - `open_vin_with_credit` may answer `in_garage` (use `open_garage_car`
-  instead), `confirmation_required` (pass the `confirm_token` back),
-  or `declined` (stop and tell the user).
+  instead), `confirmation_required`, or `declined` (stop and tell the user).
+  On `confirmation_required`: show the user the VIN and the credit cost, wait for an explicit yes, and only then re-call with the returned `confirm_token`. Never re-call with a token on your own.
 
 ## 2. Translate the request
 
@@ -49,8 +48,7 @@ Turn the Czech request into catalog search terms:
 
 - Open the unit diagram with `get_unit`, look at the image, and match the
   callout to the part the user described.
-- Use `highlight` (callout code or OEM number) to double-check the right
-  callout is boxed.
+- Call `get_unit(catalog_id, unit_id, highlight=<callout code or OEM>)` to double-check the right callout is boxed.
 
 ## 5. Ask when ambiguous
 
