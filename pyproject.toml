@@ -8,7 +8,7 @@ version = "0.1.0"
 description = "Local read-only MCP server for autokelly.cz"
 requires-python = ">=3.11"
 dependencies = [
-  "mcp>=1.9",
+  "mcp>=1.9,<2",
   "curl_cffi>=0.7",
   "selectolax>=0.3",
   "pillow>=10",
