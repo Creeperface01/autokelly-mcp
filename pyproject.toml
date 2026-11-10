@@ -1,0 +1,36 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "autokelly-mcp"
+version = "0.1.0"
+description = "Local read-only MCP server for autokelly.cz"
+requires-python = ">=3.11"
+dependencies = [
+  "mcp>=1.9",
+  "curl_cffi>=0.7",
+  "selectolax>=0.3",
+  "pillow>=10",
+  "playwright>=1.45",
+]
+
+[dependency-groups]
+dev = [
+  "pytest>=8",
+  "anyio",
+  "ruff",
+]
+
+[project.scripts]
+autokelly-mcp = "autokelly_mcp.server:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/autokelly_mcp"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --ignore=tests/live"
+
+[tool.ruff]
+line-length = 110
