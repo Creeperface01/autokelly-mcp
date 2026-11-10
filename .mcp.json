@@ -1,0 +1,1 @@
+{"mcpServers": {"autokelly": {"args": ["--from", "${CLAUDE_PLUGIN_ROOT}", "autokelly-mcp"], "command": "uvx"}}}

@@ -1,0 +1,1 @@
+{"name": "autokelly-local", "owner": {"name": "local"}, "plugins": [{"description": "Read-only Autokelly catalog lookup: find OEM part numbers in VIN catalogs and check prices and stock.", "name": "autokelly-mcp", "source": "./"}]}
