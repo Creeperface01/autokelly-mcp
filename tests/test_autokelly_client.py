@@ -1,11 +1,18 @@
 """AutokellyClient: garage, catalog routes and OEM search with prices/stock."""
 
 import pytest
-from conftest import FakeFetcher, make_response
+from conftest import FakeFetcher, fixture_text, make_response
 
 from autokelly_mcp.auth import Auth
 from autokelly_mcp.autokelly import AutokellyClient
-from autokelly_mcp.errors import AutokellyError, CreditRefusedError, UnknownCarError, UnsupportedCarError
+from autokelly_mcp.errors import (
+    AutokellyError,
+    BlockedError,
+    CreditRefusedError,
+    NotLoggedInError,
+    UnknownCarError,
+    UnsupportedCarError,
+)
 from autokelly_mcp.session_store import SessionData, load_session, save_session
 
 _GUID = "11111111-2222-3333-4444-555555555555"
@@ -155,3 +162,50 @@ async def test_oem_search_empty_garage_without_guid():
     _, client, _ = _make_client([("POST", "Garage/Cars/1", empty_garage)])
     with pytest.raises(AutokellyError):
         await client.oem_search("25310J7800")
+
+
+@pytest.mark.anyio
+async def test_garage_cars_blocked_empty_body_raises_without_login():
+    _, client, counter = _make_client(
+        [
+            ("POST", "Garage/Cars/1", make_response("", status=403)),
+            ("POST", "vin-decoder/credit", "autokelly/vin_credit.json"),
+        ]
+    )
+    with pytest.raises(BlockedError):
+        await client.garage_cars()
+    assert counter["logins"] == 0
+
+
+@pytest.mark.anyio
+async def test_garage_cars_relogin_once_then_succeeds():
+    calls = {"n": 0}
+
+    def garage_route(method: str, url: str, body: object):
+        calls["n"] += 1
+        if calls["n"] == 1:
+            return make_response("", url=url)
+        return make_response(fixture_text("autokelly/garage_cars.json"), url=url)
+
+    _, client, counter = _make_client(
+        [
+            ("POST", "Garage/Cars/1", garage_route),
+            ("POST", "vin-decoder/credit", "autokelly/vin_credit.json"),
+        ]
+    )
+    cars = await client.garage_cars()
+    assert counter["logins"] == 1
+    assert [car.vin for car in cars] == ["TESTVINHYUNDAI001", "TESTVINALFA000001"]
+
+
+@pytest.mark.anyio
+async def test_garage_cars_second_empty_raises_after_single_login():
+    _, client, counter = _make_client(
+        [
+            ("POST", "Garage/Cars/1", make_response("")),
+            ("POST", "vin-decoder/credit", "autokelly/vin_credit.json"),
+        ]
+    )
+    with pytest.raises(NotLoggedInError):
+        await client.garage_cars()
+    assert counter["logins"] == 1

@@ -70,7 +70,8 @@ class AutokellyClient:
 
     async def _garage_cars_impl(self) -> list[GarageCar]:
         resp = await self._fetcher.post_json(BASE_URL + "/Garage/Cars/1", None, referer=_GARAGE_LIST_REFERER)
-        if resp.text == "":
+        classify(resp, expect_json=True)
+        if resp.text == "" and resp.status == 200:
             return parse_garage_cars("")
         data = parse_json(resp)
         return parse_garage_cars(data if isinstance(data, dict) else {})
