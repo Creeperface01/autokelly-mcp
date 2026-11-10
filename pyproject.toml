@@ -4,15 +4,15 @@ build-backend = "hatchling.build"
 
 [project]
 name = "autokelly-mcp"
-version = "0.1.0"
+version = "0.1.1"
 description = "Local read-only MCP server for autokelly.cz"
 requires-python = ">=3.11"
 dependencies = [
-  "mcp>=1.9,<2",
-  "curl_cffi>=0.7",
-  "selectolax>=0.3",
-  "pillow>=10",
-  "playwright>=1.45",
+  "mcp>=1.30,<2",
+  "curl_cffi>=0.17,<1",
+  "selectolax>=1.0.2",
+  "pillow>=13.0",
+  "playwright>=1.65",
 ]
 
 [dependency-groups]

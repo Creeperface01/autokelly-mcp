@@ -40,7 +40,7 @@ wheels = [
 
 [[package]]
 name = "autokelly-mcp"
-version = "0.1.0"
+version = "0.1.1"
 source = { editable = "." }
 dependencies = [
     { name = "curl-cffi" },
@@ -59,11 +59,11 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "curl-cffi", specifier = ">=0.7" },
-    { name = "mcp", specifier = ">=1.9,<2" },
-    { name = "pillow", specifier = ">=10" },
-    { name = "playwright", specifier = ">=1.45" },
-    { name = "selectolax", specifier = ">=0.3" },
+    { name = "curl-cffi", specifier = ">=0.17,<1" },
+    { name = "mcp", specifier = ">=1.30,<2" },
+    { name = "pillow", specifier = ">=13.0" },
+    { name = "playwright", specifier = ">=1.65" },
+    { name = "selectolax", specifier = ">=1.0.2" },
 ]
 
 [package.metadata.requires-dev]

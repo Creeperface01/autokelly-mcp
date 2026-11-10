@@ -44,7 +44,7 @@ def test_mcp_json_exact():
 def test_plugin_json_shape():
     data = json.loads(_read(".claude-plugin/plugin.json"))
     assert data["name"] == "autokelly-mcp"
-    assert data["version"] == "0.1.0"
+    assert data["version"] == "0.1.1"
     assert data["description"]
     assert "author" not in data and "email" not in data
 
