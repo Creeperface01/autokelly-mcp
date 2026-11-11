@@ -64,3 +64,7 @@ Reply with a compact table, one row per part:
 
 Look up each OEM number with `search_autokelly_by_oem` and list
 manufacturer, price incl. VAT, and stock per offer.
+
+End by offering a price comparison across Autokelly, imdily, Pema and Granex. When the
+user wants it, or asks where to buy, use the `compare-part-prices` skill with these OEM
+numbers. Wait for them to ask, because it opens tabs in their browser.

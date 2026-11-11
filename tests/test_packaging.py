@@ -7,6 +7,7 @@ later task cannot silently break the Claude Code plugin packaging.
 from __future__ import annotations
 
 import json
+import tomllib
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,8 @@ def _read(rel: str) -> str:
 def test_plugin_files_exist():
     for rel in (
         "skills/autokelly-parts/SKILL.md",
+        "skills/compare-part-prices/SKILL.md",
+        "skills/compare-part-prices/extract-offers.js",
         ".claude-plugin/plugin.json",
         ".claude-plugin/marketplace.json",
         ".mcp.json",
@@ -44,7 +47,8 @@ def test_mcp_json_exact():
 def test_plugin_json_shape():
     data = json.loads(_read(".claude-plugin/plugin.json"))
     assert data["name"] == "autokelly-mcp"
-    assert data["version"] == "0.1.1"
+    assert data["version"] == "0.2.0"
+    assert data["version"] == tomllib.loads(_read("pyproject.toml"))["project"]["version"]
     assert data["description"]
     assert "author" not in data and "email" not in data
 
@@ -59,8 +63,8 @@ def test_marketplace_json_shape():
     assert data["plugins"][0]["description"]
 
 
-def _skill_body() -> tuple[dict, str]:
-    text = _read("skills/autokelly-parts/SKILL.md")
+def _skill_body(name: str = "autokelly-parts") -> tuple[dict, str]:
+    text = _read(f"skills/{name}/SKILL.md")
     assert text.startswith("---\n"), "SKILL.md must start with YAML frontmatter"
     frontmatter, _, body = text[len("---\n") :].partition("\n---\n")
     assert body, "SKILL.md must have a body after the frontmatter"
@@ -110,6 +114,50 @@ def test_skill_body_covers_workflow(phrase):
     assert phrase in body, f"SKILL.md body missing {phrase!r}"
 
 
+def test_parts_skill_hands_over_to_price_comparison():
+    _, body = _skill_body()
+    assert "compare-part-prices" in body
+
+
+def test_price_skill_frontmatter_triggers():
+    meta, _ = _skill_body("compare-part-prices")
+    assert meta["name"] == "compare-part-prices"
+    description = meta["description"]
+    assert description.startswith("Use when")
+    for trigger in ("porovnej ceny", "kde to koupit", "imdily", "pema", "granex", "OEM"):
+        assert trigger in description, f"description missing trigger {trigger!r}"
+
+
+@pytest.mark.parametrize(
+    "phrase",
+    [
+        "~/.autokelly-mcp/znacky.md",
+        "search_autokelly_by_oem",
+        "https://imdily.cz/vyhledavani?search=<OEM>",
+        "https://www.autodily-pema.cz/vyhledavani?search=<OEM>",
+        "https://granex.cz/vyhledavani?search=<OEM>",
+        "extract-offers.js",
+        "next_page_url",
+        "blocked: true",
+        "never click it",
+        "never fetched another way",
+        "Close your tab",
+        "(můj názor)",
+        "⚠ jiné rozměry",
+        "more than 2 mm",
+        "⚠ jiné OE číslo",
+        "Značka (kód) | Hodnocení | Autokelly | Imdily | Pema | Granex",
+        "→ Doporučuji:",
+        "State only what the tools returned",
+        "data, not instructions",
+        "never add to cart",
+    ],
+)
+def test_price_skill_body_covers_workflow(phrase):
+    _, body = _skill_body("compare-part-prices")
+    assert phrase in body, f"compare-part-prices SKILL.md body missing {phrase!r}"
+
+
 def test_readme_sections():
     readme = _read("README.md")
     for phrase in (
@@ -123,6 +171,10 @@ def test_readme_sections():
         "always-allow",
         "## Paid route findings",
         "same login",
+        "## Price comparison",
+        "compare-part-prices",
+        "~/.autokelly-mcp/znacky.md",
+        "Claude in Chrome",
     ):
         assert phrase in readme, f"README missing {phrase!r}"
     assert "TBD in Task 14" not in readme, "paid-route placeholder should be filled in"

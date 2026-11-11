@@ -1,7 +1,8 @@
 # autokelly-mcp
 
 A local, read-only MCP server for [autokelly.cz](https://www.autokelly.cz),
-shipped as a Claude Code plugin together with the `autokelly-parts` skill.
+shipped as a Claude Code plugin together with the `autokelly-parts` and
+`compare-part-prices` skills.
 Talk to the agent in Czech — e.g. "Najdi mi chladič motoru a gumové uložení"
 — and it walks the Autokelly VIN catalogs for you: both the tree catalog
 ("Podle skupin") and the picture catalog ("Podle obrázků"), checks the
@@ -50,6 +51,40 @@ To log out, delete it:
 ```sh
 rm ~/.autokelly-mcp/session.json
 ```
+
+## Price comparison
+
+The `compare-part-prices` skill compares one or more OEM numbers across
+Autokelly and three other shops: imdily.cz, autodily-pema.cz and granex.cz.
+Ask e.g. "Porovnej ceny 25310-J7800". The parts skill also offers it once
+it has found OEM numbers.
+
+- **Autokelly** prices come from the MCP server (`search_autokelly_by_oem`).
+- **imdily, Pema and Granex** are read in *your own Chrome*. In Claude Code
+  that's Claude in Chrome; elsewhere it's the Codex Chrome extension or Chrome
+  DevTools MCP attached to your Chrome. All three shops sit behind a
+  Cloudflare check that blocks plain HTTP requests. Pema and Granex also ask
+  robots not to use their search. So the MCP server never contacts them. The
+  agent opens one tab, visits
+  `https://<shop>/vyhledavani?search=<OEM>` on each shop, reads the results
+  with `skills/compare-part-prices/extract-offers.js`, and closes the tab.
+  - It never clicks through a security check.
+  - If a shop can't be read (security check, the extension refusing the site,
+    or no browser tool at all), you get its search link instead.
+- **Brand list:** `~/.autokelly-mcp/znacky.md` holds the brands you avoid and
+  the ones you trust. It lives outside the plugin so updates don't overwrite
+  it. Edit it directly, or tell the agent ("Starline nechci"). Brands not on
+  the list get the agent's own opinion, labelled as such.
+- **The answer:** one brand × shop table with prices incl. VAT and
+  availability. The recommendation is the cheapest available offer from a
+  trusted brand, with the cheapest overall mentioned alongside. Offers whose
+  listed dimensions don't match the rest are flagged: shops' cross-references
+  sometimes include a different part.
+
+The extraction script's tests (`tests/test_extract_offers.py`) run it in
+headless Chrome against saved pages. Chromium can't start inside the macOS
+sandbox, so there they are skipped. Run them outside the sandbox to execute
+them.
 
 ## VIN credits
 
