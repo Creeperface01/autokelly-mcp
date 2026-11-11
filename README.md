@@ -14,22 +14,25 @@ orders, and never changes the garage.
 
 ## Install in Claude Code
 
-The repository stays local for now (no GitHub remote yet). Install from this
-folder via a local marketplace:
+The repository is its own plugin marketplace. Add it straight from GitHub:
 
 ```text
-/plugin marketplace add /path/to/autokelly-mcp
+/plugin marketplace add Creeperface01/autokelly-mcp
 /plugin install autokelly-mcp@autokelly-local
 ```
+
+To work on a local clone instead, use `/plugin marketplace add /path/to/autokelly-mcp`.
 
 Then run `/mcp`. The `autokelly` server should show as connected with
 11 tools.
 
 ## Standalone (without Claude Code)
 
-The plugin runs the server with `uvx` straight from the plugin directory:
+The plugin runs the server with `uvx` straight from the plugin directory. Any
+other MCP client can do the same from GitHub or from a local clone:
 
 ```sh
+uvx --from git+https://github.com/Creeperface01/autokelly-mcp autokelly-mcp
 uvx --from /path/to/autokelly-mcp autokelly-mcp
 ```
 
